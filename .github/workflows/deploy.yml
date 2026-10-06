@@ -1,0 +1,61 @@
+# ──────────────────────────────────────────────────────────────────────────────
+#  UM_Terra Sentinel — GitHub Pages Deploy Workflow
+#  © 2026 Utsav Mukherjee · utsav.mukherjee@ibm.com · utsavmukherjee143@gmail.com
+#  All rights reserved.
+#
+#  Publishes index.html to GitHub Pages on every push to main.
+#  Public URL: https://ica-bob.github.io/UM_TERRA_SENTINEL/
+# ──────────────────────────────────────────────────────────────────────────────
+
+name: Deploy UM_Terra Sentinel to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:       # allow manual trigger from the Actions tab
+
+# Grant minimum permissions needed to deploy Pages
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Allow only one deployment at a time; cancel in-flight if a newer push arrives
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    name: Build & Deploy to GitHub Pages
+    runs-on: ubuntu-latest
+
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
+
+    steps:
+      # ── 1. Checkout ──────────────────────────────────────────────────────────
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # ── 2. Assemble the site root ─────────────────────────────────────────
+      #  GitHub Pages needs the artefacts in a dedicated folder.
+      #  We copy only the static assets that the browser needs.
+      - name: Assemble site directory
+        run: |
+          mkdir -p _site
+          cp index.html   _site/index.html
+          cp _headers     _site/_headers
+          cp README.md    _site/README.md
+
+      # ── 3. Upload Pages artefact ──────────────────────────────────────────
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+
+      # ── 4. Deploy ─────────────────────────────────────────────────────────
+      - name: Deploy to GitHub Pages
+        id: deploy
+        uses: actions/deploy-pages@v4

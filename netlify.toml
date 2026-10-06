@@ -1,0 +1,22 @@
+# ─────────────────────────────────────────────────────────────────────────────
+#  UM_Terra Sentinel — Netlify / Cloudflare Pages config
+#  © 2026 Utsav Mukherjee · utsav.mukherjee@ibm.com · utsavmukherjee143@gmail.com
+#  All rights reserved.
+#
+#  Drop this repo into Netlify (or Cloudflare Pages) as an alternative host:
+#   - Netlify auto-reads netlify.toml; headers come from _headers
+#   - Cloudflare Pages reads _headers automatically
+# ─────────────────────────────────────────────────────────────────────────────
+
+[build]
+  publish = "."         # serve from the repo root (index.html is already there)
+  command = ""          # no build step — purely static
+
+[build.environment]
+  NODE_VERSION = "20"
+
+# Redirect the bare root to index.html (belt-and-braces for some hosts)
+[[redirects]]
+  from = "/"
+  to   = "/index.html"
+  status = 200

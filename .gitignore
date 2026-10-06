@@ -1,0 +1,9 @@
+
+AGENT.md
+CLAUDE.md
+.agent-mem/
+
+# Python byte-code
+__pycache__/
+*.py[cod]
+

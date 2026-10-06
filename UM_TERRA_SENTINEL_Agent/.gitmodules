@@ -1,0 +1,3 @@
+[submodule "aicoe-agent-utils"]
+	path = aicoe-agent-utils
+	url = https://github.ibm.com/AI-CoE/aicoe-agent-utils.git
