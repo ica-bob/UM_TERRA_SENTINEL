@@ -1,0 +1,13 @@
+{
+  "mcpServers": {
+    "brainsync": {
+      "command": "node",
+      "args": [
+        "c:\\Users\\UtsavMukherjee\\.bobide\\extensions\\dawoodahmad.brainsync-3.0.12-universal\\dist\\mcp-server.js"
+      ],
+      "env": {
+        "BRAINSYNC_ENV_FILE": "C:\\Users\\UtsavMukherjee\\.bsync_core\\um-terra-sentinel-v2\\mcp-secret-env.json"
+      }
+    }
+  }
+}

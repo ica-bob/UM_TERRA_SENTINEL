@@ -1,0 +1,99 @@
+# ──────────────────────────────────────────────────────────────────────────────
+#  UM_Terra Sentinel — Jekyll Site Configuration
+#  © 2026 Utsav Mukherjee · utsav.mukherjee@ibm.com · utsavmukherjee143@gmail.com
+#  All rights reserved.
+#
+#  GitHub Pages uses this file to build the site with Jekyll.
+#  Public URL: https://ica-bob.github.io/UM_TERRA_SENTINEL/
+# ──────────────────────────────────────────────────────────────────────────────
+
+# ── Site identity ─────────────────────────────────────────────────────────────
+title: "UM_Terra Sentinel"
+tagline: "Planetary Intelligence Network"
+description: >-
+  Live Earth intelligence console: 3D glass globe, real-time earthquakes,
+  natural hazards, space weather, ISS tracking, near-Earth objects, alarm
+  engine and operator security.
+
+author:
+  name:  "Utsav Mukherjee"
+  email_ibm:      "utsav.mukherjee@ibm.com"
+  email_personal: "utsavmukherjee143@gmail.com"
+
+copyright: "© 2026 Utsav Mukherjee · utsav.mukherjee@ibm.com · utsavmukherjee143@gmail.com · All rights reserved."
+
+# ── URLs ──────────────────────────────────────────────────────────────────────
+url:      "https://ica-bob.github.io"
+baseurl:  "/UM_TERRA_SENTINEL"
+
+repository: "ica-bob/UM_TERRA_SENTINEL"
+
+# ── Build settings ────────────────────────────────────────────────────────────
+# "null" theme — we supply our own complete index.html (no Jekyll layout needed)
+theme: null
+
+# Keep Jekyll from touching our hand-crafted HTML and static assets
+include:
+  - index.html
+  - _headers
+  - README.md
+  - netlify.toml
+
+# Exclude everything that must not be published
+exclude:
+  - Gemfile
+  - Gemfile.lock
+  - netlify.toml
+  - "*.toml"
+  - ".github"
+  - "UM_TERRA_SENTINEL_Agent"
+  - ".agent"
+  - ".agent-mem"
+  - ".agents"
+  - ".brainsync"
+  - ".cursor"
+  - ".kilo"
+  - ".vscode"
+  - ".mcp.json"
+  - ".windsurfrules"
+  - "AGENT.md"
+  - "CLAUDE.md"
+  - "vendor"
+
+# ── Markdown / Liquid ─────────────────────────────────────────────────────────
+markdown:    kramdown
+highlighter: rouge
+
+kramdown:
+  input:         GFM
+  auto_ids:      true
+  syntax_highlighter: rouge
+
+# Disable Liquid processing inside index.html (it's a plain HTML file, not a
+# Liquid template — prevents Jekyll from choking on {{ }} in JS)
+render_with_liquid: false
+
+# ── Plugins (github-pages safe list only) ─────────────────────────────────────
+plugins:
+  - jekyll-seo-tag
+  - jekyll-sitemap
+  - jekyll-feed
+
+# ── SEO / social ──────────────────────────────────────────────────────────────
+twitter:
+  username: ""
+
+social:
+  name:  "Utsav Mukherjee"
+  links: []
+
+# ── jekyll-seo-tag defaults ───────────────────────────────────────────────────
+defaults:
+  - scope:
+      path: ""
+    values:
+      image: ""
+
+# ── Sitemap ───────────────────────────────────────────────────────────────────
+sitemap:
+  filename: "/sitemap.xml"

@@ -1,61 +1,78 @@
 # ──────────────────────────────────────────────────────────────────────────────
-#  UM_Terra Sentinel — GitHub Pages Deploy Workflow
+#  UM_Terra Sentinel — GitHub Pages with Jekyll
 #  © 2026 Utsav Mukherjee · utsav.mukherjee@ibm.com · utsavmukherjee143@gmail.com
 #  All rights reserved.
 #
-#  Publishes index.html to GitHub Pages on every push to main.
+#  Follows the official GitHub "Creating a GitHub Pages site with Jekyll"
+#  starter-workflow pattern:
+#    build job  → jekyll/builder Docker image → uploads Pages artifact
+#    deploy job → actions/deploy-pages         → publishes to Pages
+#
 #  Public URL: https://ica-bob.github.io/UM_TERRA_SENTINEL/
 # ──────────────────────────────────────────────────────────────────────────────
 
-name: Deploy UM_Terra Sentinel to GitHub Pages
+name: Deploy UM_Terra Sentinel — Jekyll → GitHub Pages
 
 on:
   push:
     branches: [main]
-  workflow_dispatch:       # allow manual trigger from the Actions tab
+  workflow_dispatch:           # manual trigger from the Actions tab
 
-# Grant minimum permissions needed to deploy Pages
+# Minimum permissions for Pages deployment
 permissions:
   contents: read
-  pages: write
+  pages:    write
   id-token: write
 
-# Allow only one deployment at a time; cancel in-flight if a newer push arrives
+# One deployment at a time; cancel superseded runs
 concurrency:
-  group: pages
+  group: "pages"
   cancel-in-progress: true
 
 jobs:
-  deploy:
-    name: Build & Deploy to GitHub Pages
+  # ── Job 1: Build the site with Jekyll ───────────────────────────────────────
+  build:
+    name: Jekyll Build
     runs-on: ubuntu-latest
 
-    environment:
-      name: github-pages
-      url: ${{ steps.deploy.outputs.page_url }}
-
     steps:
-      # ── 1. Checkout ──────────────────────────────────────────────────────────
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      # ── 2. Assemble the site root ─────────────────────────────────────────
-      #  GitHub Pages needs the artefacts in a dedicated folder.
-      #  We copy only the static assets that the browser needs.
-      - name: Assemble site directory
-        run: |
-          mkdir -p _site
-          cp index.html   _site/index.html
-          cp _headers     _site/_headers
-          cp README.md    _site/README.md
+      # Setup Ruby + Bundler using the versions declared in .ruby-version / Gemfile
+      - name: Setup Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: "3.3"       # latest Ruby supported by github-pages gem
+          bundler-cache: true        # runs `bundle install` and caches the gems
 
-      # ── 3. Upload Pages artefact ──────────────────────────────────────────
+      # Configure GitHub Pages (injects site.github metadata and sets correct baseurl)
+      - name: Setup GitHub Pages
+        id: pages
+        uses: actions/configure-pages@v5
+
+      # Jekyll build — output goes to ./_site
+      - name: Build with Jekyll
+        run: bundle exec jekyll build --baseurl "${{ steps.pages.outputs.base_path }}"
+        env:
+          JEKYLL_ENV: production
+
+      # Upload the built _site/ directory as the Pages artifact
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
-        with:
-          path: _site
+        # default artifact path is ./_site — matches Jekyll's output dir
 
-      # ── 4. Deploy ─────────────────────────────────────────────────────────
+  # ── Job 2: Deploy the artifact to GitHub Pages ──────────────────────────────
+  deploy:
+    name: Deploy to GitHub Pages
+    runs-on: ubuntu-latest
+    needs: build                   # only runs when build job succeeds
+
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    steps:
       - name: Deploy to GitHub Pages
-        id: deploy
+        id: deployment
         uses: actions/deploy-pages@v4
